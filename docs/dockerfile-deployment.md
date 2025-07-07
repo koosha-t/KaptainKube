@@ -8,14 +8,20 @@ Modern containerized applications require extensive Kubernetes expertise to depl
 
 ### Solution
 
-KaptainKube's Dockerfile deployment capability transforms a simple container definition into a complete, production-grade Kubernetes deployment using AI-driven analysis and the curated component library. 
+KaptainKube's Dockerfile deployment capability transforms a simple container definition into a complete, production-grade Kubernetes deployment using an **AI-driven agentic workflow** that orchestrates specialized MCP (Model Context Protocol) servers.
 
 **Single Command Deployment:**
 ```bash
 kaptain-kube deploy app-config.yaml
 ```
 
-This command analyzes your Dockerfile and application requirements, then automatically generates and applies all necessary Kubernetes manifests, security policies, monitoring configurations, and CI/CD pipelines.
+This command activates the **KaptainKube Agent**, which:
+1. **Analyzes** your Dockerfile and application requirements using AI reasoning
+2. **Plans** the optimal architecture using the curated component library
+3. **Executes** deployment actions by orchestrating specialized MCP servers
+4. **Monitors** the deployment process and provides feedback
+
+The agent acts as an intelligent orchestrator, while MCP servers handle the actual implementation tasks like Kubernetes manifest generation, security policy creation, and infrastructure provisioning.
 
 ## Quick Start
 
@@ -166,9 +172,41 @@ The deployment process uses LLM analysis to:
 4. **Security Assessment**: Determine appropriate security policies and compliance requirements
 5. **Architecture Planning**: Select optimal component configuration
 
+### Agentic Workflow Architecture
+
+```mermaid
+graph TD
+    A[User: kaptain-kube deploy app-config.yaml] --> B[KaptainKube Agent]
+    B --> C[Dockerfile Analysis]
+    B --> D[Requirements Planning]
+    B --> E[Component Selection]
+    
+    B --> F[MCP Server: Docker]
+    B --> G[MCP Server: Kubernetes]
+    B --> H[MCP Server: Security]
+    B --> I[MCP Server: Monitoring]
+    B --> J[MCP Server: GitOps]
+    
+    F --> K[Generated Manifests]
+    G --> K
+    H --> K
+    I --> K
+    J --> K
+    
+    K --> L[Production-Ready Deployment]
+```
+
+**Agent Reasoning Flow:**
+1. **Context Gathering**: Agent analyzes Dockerfile, requirements, and current cluster state
+2. **Planning**: AI reasons about optimal architecture based on the component library
+3. **Task Decomposition**: Agent breaks down deployment into specialized tasks
+4. **MCP Orchestration**: Agent calls appropriate MCP servers with specific parameters
+5. **Validation**: Agent verifies outputs and handles any issues
+6. **Deployment**: Agent applies generated resources and monitors progress
+
 ### Generated Kubernetes Resources
 
-For each deployment, KaptainKube generates:
+Through MCP server orchestration, KaptainKube generates:
 
 ```
 📁 k8s-manifests/
@@ -198,250 +236,430 @@ For each deployment, KaptainKube generates:
 └── jaeger-tracing.yaml             # Distributed tracing config
 ```
 
-## Implementation Requirements
+## MCP Server Requirements
 
-### Phase 1: Core Implementation
+To implement the Dockerfile deployment capability, KaptainKube requires the following specialized MCP servers:
+
+### 1. **Docker Analysis MCP Server**
+**Purpose**: Analyze Dockerfiles and container images for deployment planning
+
+**Required Tools:**
+- `analyze_dockerfile` - Parse Dockerfile and extract metadata
+- `inspect_image` - Get runtime information from container images
+- `estimate_resources` - Predict CPU/memory requirements
+- `detect_dependencies` - Identify language/framework dependencies
+- `security_scan` - Basic security analysis of container layers
+
+**Required Resources:**
+- `dockerfile_best_practices` - Documentation for Dockerfile optimization
+- `base_image_catalog` - Information about common base images
+
+### 2. **Kubernetes Manifest Generator MCP Server**
+**Purpose**: Generate production-ready Kubernetes manifests
+
+**Required Tools:**
+- `generate_deployment` - Create Deployment manifests with best practices
+- `generate_service` - Create Service manifests based on exposed ports
+- `generate_configmap` - Create ConfigMaps for application configuration
+- `generate_secrets` - Create Secret manifests for sensitive data
+- `validate_manifests` - Validate generated YAML against Kubernetes API
+- `apply_manifests` - Apply manifests to target cluster
+
+**Required Resources:**
+- `manifest_templates` - Template library for different resource types
+- `kubernetes_schema` - Kubernetes API schema for validation
+
+### 3. **Security Policy MCP Server**
+**Purpose**: Generate security policies and compliance configurations
+
+**Required Tools:**
+- `generate_network_policy` - Create NetworkPolicy manifests
+- `generate_psp` - Create PodSecurityPolicy/PodSecurityStandard
+- `generate_rbac` - Create RBAC policies for applications
+- `scan_vulnerabilities` - Security scanning of configurations
+- `compliance_check` - Validate against compliance frameworks (PCI, HIPAA, etc.)
+
+**Required Resources:**
+- `security_baselines` - Security policy templates for different compliance levels
+- `vulnerability_database` - Known vulnerabilities and mitigations
+
+### 4. **Ingress & Networking MCP Server**
+**Purpose**: Configure ingress controllers and networking
+
+**Required Tools:**
+- `generate_kong_ingress` - Create Kong Ingress configurations
+- `generate_nginx_ingress` - Create NGINX Ingress configurations  
+- `generate_certificates` - Create TLS certificate configurations
+- `configure_load_balancer` - Set up load balancer configurations
+
+**Required Resources:**
+- `ingress_templates` - Templates for different ingress controllers
+- `certificate_authorities` - CA configurations for different environments
+
+### 5. **Service Mesh MCP Server**
+**Purpose**: Configure Istio service mesh components
+
+**Required Tools:**
+- `generate_virtual_service` - Create Istio VirtualService
+- `generate_destination_rule` - Create Istio DestinationRule
+- `generate_gateway` - Create Istio Gateway configurations
+- `configure_mtls` - Set up mutual TLS policies
+- `configure_traffic_policy` - Set up traffic management rules
+
+**Required Resources:**
+- `istio_templates` - Service mesh configuration templates
+- `traffic_patterns` - Common traffic management patterns
+
+### 6. **Monitoring & Observability MCP Server**
+**Purpose**: Set up comprehensive monitoring and observability
+
+**Required Tools:**
+- `generate_service_monitor` - Create Prometheus ServiceMonitor
+- `generate_grafana_dashboard` - Create application-specific dashboards
+- `generate_alert_rules` - Create Prometheus alerting rules
+- `configure_jaeger_tracing` - Set up distributed tracing
+- `configure_log_aggregation` - Set up log collection
+
+**Required Resources:**
+- `dashboard_templates` - Grafana dashboard templates by application type
+- `alert_runbooks` - Runbook templates for common alerts
+
+### 7. **Autoscaling MCP Server** 
+**Purpose**: Configure horizontal and vertical pod autoscaling
+
+**Required Tools:**
+- `generate_hpa` - Create HorizontalPodAutoscaler
+- `generate_vpa` - Create VerticalPodAutoscaler  
+- `generate_keda_scaler` - Create KEDA ScaledObject for event-driven scaling
+- `configure_cluster_autoscaler` - Set up cluster-level scaling
+- `analyze_scaling_metrics` - Recommend optimal scaling configurations
+
+**Required Resources:**
+- `scaling_patterns` - Scaling configuration patterns by workload type
+- `metrics_catalog` - Available metrics for scaling decisions
+
+### 8. **Database Operator MCP Server**
+**Purpose**: Deploy and configure database operators
+
+**Required Tools:**
+- `deploy_postgres_operator` - Deploy PostgreSQL using Zalando operator
+- `deploy_mysql_operator` - Deploy MySQL operator
+- `configure_backup` - Set up automated database backups
+- `configure_replication` - Set up database replication
+- `generate_connection_secrets` - Create database connection secrets
+
+**Required Resources:**
+- `operator_catalog` - Available database operators and configurations
+- `backup_policies` - Backup and retention policies
+
+### 9. **GitOps & CI/CD MCP Server**
+**Purpose**: Set up GitOps workflows and CI/CD pipelines
+
+**Required Tools:**
+- `create_git_repository` - Create Git repository for GitOps
+- `generate_tekton_pipeline` - Create Tekton build/test pipelines
+- `configure_argocd_app` - Set up ArgoCD Application
+- `setup_webhooks` - Configure Git webhooks for automation
+- `generate_pipeline_triggers` - Create CI/CD triggers
+
+**Required Resources:**
+- `pipeline_templates` - CI/CD pipeline templates by language/framework
+- `gitops_patterns` - GitOps repository structure patterns
+
+### 10. **Cost Optimization MCP Server**
+**Purpose**: Analyze and optimize deployment costs
+
+**Required Tools:**
+- `analyze_costs` - Estimate deployment costs
+- `recommend_optimizations` - Suggest cost optimizations
+- `configure_resource_quotas` - Set up resource quotas and limits
+- `setup_cost_monitoring` - Configure cost tracking and alerts
+
+**Required Resources:**
+- `cost_models` - Cost models for different cloud providers
+- `optimization_strategies` - Cost optimization strategies by workload type
+
+## Implementation Steps
+
+### Phase 1: Core Agent Implementation
 
 #### 1.1 CLI Command Structure
 ```go
 // Add to cmd/main.go
 rootCmd.AddCommand(&cobra.Command{
     Use:   "deploy [config-file]",
-    Short: "Deploy containerized application with production-grade Kubernetes setup",
-    Long: `Analyze Dockerfile and requirements to generate complete Kubernetes deployment
-    including ingress, monitoring, autoscaling, security policies, and CI/CD pipeline.`,
+    Short: "Deploy containerized application using AI-driven MCP orchestration",
+    Long: `Activate the KaptainKube Agent to analyze your Dockerfile and requirements, 
+    then orchestrate specialized MCP servers to generate and deploy a complete, 
+    production-grade Kubernetes deployment.`,
     Args:  cobra.ExactArgs(1),
     RunE: func(cmd *cobra.Command, args []string) error {
-        return RunDeployCommand(cmd.Context(), *opt, args[0])
+        return RunDeployAgentCommand(cmd.Context(), *opt, args[0])
     },
 })
 ```
 
-#### 1.2 Configuration Parser
+#### 1.2 Agent Orchestrator
 ```go
-// pkg/deployment/config.go
-type AppDeploymentConfig struct {
-    APIVersion string                 `yaml:"apiVersion"`
-    Kind       string                 `yaml:"kind"`
-    Metadata   AppMetadata            `yaml:"metadata"`
-    Spec       AppDeploymentSpec      `yaml:"spec"`
+// pkg/agent/deployment_agent.go
+type DeploymentAgent struct {
+    LLMClient    gollm.Client
+    MCPManager   *mcp.Manager
+    Config       AgentConfig
 }
 
-type AppDeploymentSpec struct {
-    Dockerfile       string              `yaml:"dockerfile,omitempty"`
-    Image           string              `yaml:"image,omitempty"`
-    Requirements    []string            `yaml:"requirements,omitempty"`
-    Ports           []ServicePort       `yaml:"ports,omitempty"`
-    Resources       ResourceConfig      `yaml:"resources,omitempty"`
-    // ... other fields
+type AgentConfig struct {
+    RequiredMCPServers []string
+    MaxIterations      int
+    ValidationStrict   bool
+}
+
+func (da *DeploymentAgent) ExecuteDeployment(ctx context.Context, config AppDeploymentConfig) error {
+    // 1. Analyze Dockerfile and requirements
+    analysis := da.analyzeRequirements(ctx, config)
+    
+    // 2. Create deployment plan
+    plan := da.createDeploymentPlan(ctx, analysis)
+    
+    // 3. Orchestrate MCP servers
+    return da.orchestrateMCPServers(ctx, plan)
 }
 ```
 
-#### 1.3 Dockerfile Analyzer
+#### 1.3 MCP Server Integration
 ```go
-// pkg/deployment/dockerfile.go
-type DockerfileAnalyzer struct {
-    LLMClient gollm.Client
+// pkg/agent/mcp_orchestrator.go
+type MCPOrchestrator struct {
+    manager    *mcp.Manager
+    llmClient  gollm.Client
 }
 
-type DockerfileAnalysis struct {
-    BaseImage       string
-    ExposedPorts    []int
-    User            string
-    WorkDir         string
-    Dependencies    []string
-    HealthCheck     *HealthCheckConfig
-    ResourceHints   ResourceEstimate
-    SecurityContext SecurityAnalysis
+func (mo *MCPOrchestrator) CallMCPTool(ctx context.Context, serverName, toolName string, args map[string]interface{}) (string, error) {
+    client, exists := mo.manager.GetClient(serverName)
+    if !exists {
+        return "", fmt.Errorf("MCP server %s not available", serverName)
+    }
+    
+    return client.CallTool(ctx, toolName, args)
 }
-
-func (da *DockerfileAnalyzer) Analyze(ctx context.Context, dockerfilePath string) (*DockerfileAnalysis, error)
 ```
 
-#### 1.4 Component Template Engine
+### Phase 2: MCP Server Development
+
+#### 2.1 Docker Analysis MCP Server
+**Technology Stack**: Node.js + TypeScript, Docker SDK
+**Repository Structure**:
+```
+docker-analysis-mcp/
+├── package.json
+├── src/
+│   ├── index.ts              # MCP server entry point
+│   ├── tools/
+│   │   ├── analyze-dockerfile.ts
+│   │   ├── inspect-image.ts
+│   │   ├── estimate-resources.ts
+│   │   └── security-scan.ts
+│   ├── resources/
+│   │   ├── dockerfile-best-practices.ts
+│   │   └── base-image-catalog.ts
+│   └── utils/
+│       ├── docker-client.ts
+│       └── resource-estimator.ts
+└── templates/
+    └── analysis-templates/
+```
+
+**Key Implementation Steps**:
+1. Set up MCP server boilerplate using `@modelcontextprotocol/sdk`
+2. Integrate Docker SDK for container analysis
+3. Implement Dockerfile parsing using AST analysis
+4. Create resource estimation algorithms
+5. Add security scanning with Trivy integration
+
+**Example Tool Implementation**:
+```typescript
+// src/tools/analyze-dockerfile.ts
+export const analyzeDockerfile = {
+  name: "analyze_dockerfile",
+  description: "Parse and analyze a Dockerfile for deployment planning",
+  inputSchema: {
+    type: "object",
+    properties: {
+      dockerfile_path: { type: "string" },
+      build_context: { type: "string" }
+    },
+    required: ["dockerfile_path"]
+  }
+}
+```
+
+#### 2.2 Kubernetes Manifest Generator MCP Server
+**Technology Stack**: Go + Kubernetes client-go
+**Repository Structure**:
+```
+k8s-manifest-mcp/
+├── go.mod
+├── cmd/
+│   └── server/
+│       └── main.go
+├── internal/
+│   ├── server/
+│   │   └── mcp_server.go
+│   ├── tools/
+│   │   ├── generate_deployment.go
+│   │   ├── generate_service.go
+│   │   └── validate_manifests.go
+│   ├── templates/
+│   │   ├── deployment.yaml.tmpl
+│   │   └── service.yaml.tmpl
+│   └── k8s/
+│       └── client.go
+└── pkg/
+    └── generator/
+        ├── manifest.go
+        └── validator.go
+```
+
+**Key Implementation Steps**:
+1. Set up Go MCP server using `github.com/mark3labs/mcp-go`
+2. Integrate Kubernetes client-go for API validation
+3. Create template engine with Go text/template
+4. Implement manifest validation using dry-run
+5. Add best practices enforcement
+
+#### 2.3 Security Policy MCP Server
+**Technology Stack**: Python + OPA/Gatekeeper, Kubernetes Python client
+**Repository Structure**:
+```
+security-policy-mcp/
+├── pyproject.toml
+├── src/
+│   ├── security_mcp/
+│   │   ├── __init__.py
+│   │   ├── server.py
+│   │   ├── tools/
+│   │   │   ├── generate_network_policy.py
+│   │   │   ├── generate_psp.py
+│   │   │   └── compliance_check.py
+│   │   ├── resources/
+│   │   │   ├── security_baselines.py
+│   │   │   └── vulnerability_db.py
+│   │   └── compliance/
+│   │       ├── pci.py
+│   │       ├── hipaa.py
+│   │       └── fips.py
+└── templates/
+    ├── network-policies/
+    ├── pod-security/
+    └── rbac/
+```
+
+**Key Implementation Steps**:
+1. Set up Python MCP server using `mcp` package
+2. Integrate OPA/Gatekeeper policy templates
+3. Create compliance framework mappings
+4. Implement vulnerability scanning integration
+5. Add policy validation and testing
+
+### Phase 3: MCP Server Deployment & Configuration
+
+#### 3.1 Container Images
+Create Docker containers for each MCP server:
+```dockerfile
+# docker-analysis-mcp/Dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY dist/ ./dist/
+EXPOSE 8080
+CMD ["node", "dist/index.js"]
+```
+
+#### 3.2 MCP Configuration
+Update KaptainKube's MCP configuration to include deployment servers:
+```yaml
+# ~/.config/kubectl-ai/mcp.yaml
+servers:
+  - name: docker-analysis
+    url: "http://localhost:8001"
+    timeout: 30
+  - name: k8s-manifest-generator
+    url: "http://localhost:8002"
+    timeout: 60
+  - name: security-policy
+    url: "http://localhost:8003"
+    timeout: 45
+  - name: ingress-networking
+    url: "http://localhost:8004"
+  - name: service-mesh
+    url: "http://localhost:8005"
+  - name: monitoring-observability
+    url: "http://localhost:8006"
+  - name: autoscaling
+    url: "http://localhost:8007"
+  - name: database-operator
+    url: "http://localhost:8008"
+  - name: gitops-cicd
+    url: "http://localhost:8009"
+  - name: cost-optimization
+    url: "http://localhost:8010"
+```
+
+### Phase 4: Integration and Testing
+
+#### 4.1 Agent-MCP Integration Tests
 ```go
-// pkg/deployment/templates.go
-type TemplateEngine struct {
-    ComponentLibrary map[string]ComponentTemplate
-    LLMClient       gollm.Client
-}
-
-type ComponentTemplate struct {
-    Name         string
-    Type         ComponentType // Ingress, ServiceMesh, Database, etc.
-    Dependencies []string
-    Manifests    []string // YAML template files
-    Configurator func(AppDeploymentSpec, DockerfileAnalysis) (map[string]interface{}, error)
-}
-
-func (te *TemplateEngine) GenerateManifests(spec AppDeploymentSpec, analysis DockerfileAnalysis) ([]KubernetesManifest, error)
-```
-
-#### 1.5 LLM Integration
-```go
-// pkg/deployment/planner.go
-type DeploymentPlanner struct {
-    LLMClient gollm.Client
-    Templates *TemplateEngine
-}
-
-type DeploymentPlan struct {
-    Components      []ComponentConfig
-    Dependencies    []DependencySpec
-    SecurityPolicies []SecurityPolicy
-    MonitoringRules []MonitoringConfig
-    ScalingConfig   AutoscalingConfig
-}
-
-func (dp *DeploymentPlanner) CreatePlan(ctx context.Context, config AppDeploymentConfig, analysis DockerfileAnalysis) (*DeploymentPlan, error)
-```
-
-### Phase 2: Component Library Integration
-
-#### 2.1 Component Templates Directory Structure
-```
-📁 pkg/deployment/templates/
-├── ingress/
-│   ├── kong/
-│   │   ├── ingress.yaml.tmpl
-│   │   ├── kong-plugin.yaml.tmpl
-│   │   └── certificate.yaml.tmpl
-│   └── nginx/
-├── servicemesh/
-│   ├── istio/
-│   │   ├── virtualservice.yaml.tmpl
-│   │   ├── destinationrule.yaml.tmpl
-│   │   └── peerauthentication.yaml.tmpl
-├── database/
-│   ├── postgresql/
-│   │   ├── cluster.yaml.tmpl
-│   │   ├── backup.yaml.tmpl
-│   │   └── monitoring.yaml.tmpl
-├── monitoring/
-│   ├── prometheus/
-│   └── grafana/
-├── autoscaling/
-│   ├── hpa.yaml.tmpl
-│   ├── vpa.yaml.tmpl
-│   └── keda.yaml.tmpl
-└── security/
-    ├── networkpolicy.yaml.tmpl
-    ├── podsecuritypolicy.yaml.tmpl
-    └── opa-policies/
-```
-
-#### 2.2 Component Registry
-```go
-// pkg/deployment/registry.go
-type ComponentRegistry struct {
-    components map[string]Component
-    resolver   DependencyResolver
-}
-
-type Component interface {
-    Name() string
-    Type() ComponentType
-    Dependencies() []string
-    ApplicabilityRules() []Rule
-    Generate(config Config) ([]KubernetesResource, error)
-    Validate(config Config) error
-}
-
-// Built-in components following the white paper's "Lego" library
-func RegisterBuiltinComponents(registry *ComponentRegistry) {
-    registry.Register(NewKongIngressComponent())
-    registry.Register(NewIstioServiceMeshComponent())
-    registry.Register(NewPrometheusMonitoringComponent())
-    registry.Register(NewPostgresOperatorComponent())
-    registry.Register(NewHPAComponent())
-    registry.Register(NewOPAGatekeeperComponent())
-    // ... etc.
-}
-```
-
-### Phase 3: Advanced Features
-
-#### 3.1 GitOps Integration
-```go
-// pkg/deployment/gitops.go
-type GitOpsManager struct {
-    GitClient    GitClient
-    ArgoClient   ArgoClient
-    TemplateRepo string
-}
-
-func (gm *GitOpsManager) CommitManifests(manifests []KubernetesManifest, config AppDeploymentConfig) error
-func (gm *GitOpsManager) CreateArgoApplication(config AppDeploymentConfig) error
-func (gm *GitOpsManager) SetupWebhooks(repoURL string) error
-```
-
-#### 3.2 CI/CD Pipeline Generation
-```go
-// pkg/deployment/cicd.go
-type PipelineGenerator struct {
-    TektonClient tekton.Interface
-    Templates    map[string]PipelineTemplate
-}
-
-type PipelineTemplate struct {
-    BuildSteps    []tektonv1.Step
-    TestSteps     []tektonv1.Step
-    SecurityScans []tektonv1.Step
-    DeploySteps   []tektonv1.Step
-}
-
-func (pg *PipelineGenerator) GeneratePipeline(config AppDeploymentConfig, analysis DockerfileAnalysis) (*tektonv1.Pipeline, error)
-```
-
-#### 3.3 Monitoring & Observability
-```go
-// pkg/deployment/observability.go
-type ObservabilityStack struct {
-    PrometheusConfig *PrometheusConfig
-    GrafanaConfig    *GrafanaConfig
-    JaegerConfig     *JaegerConfig
-    FluentBitConfig  *FluentBitConfig
-}
-
-func (os *ObservabilityStack) GenerateDashboard(appMetadata AppMetadata, ports []ServicePort) (*GrafanaDashboard, error)
-func (os *ObservabilityStack) GenerateAlertRules(slos []SLOSpec) (*PrometheusRules, error)
-```
-
-### Phase 4: Testing & Validation
-
-#### 4.1 Integration Tests
-```go
-// test/integration/deployment_test.go
-func TestDockerfileDeployment(t *testing.T) {
-    // Test cases for different Dockerfile patterns
+// test/agent/deployment_test.go
+func TestDeploymentAgent(t *testing.T) {
+    // Start MCP servers
+    servers := startTestMCPServers(t)
+    defer stopTestMCPServers(servers)
+    
+    // Initialize agent with test MCP manager
+    agent := NewDeploymentAgent(testLLMClient, testMCPManager)
+    
+    // Test deployment scenarios
     testCases := []struct {
         name           string
-        dockerfile     string
         config         AppDeploymentConfig
-        expectedComps  []string
-        expectedPolicies []string
+        expectedTools  []string
+        expectedOutputs []string
     }{
         {
             name: "simple web app",
-            dockerfile: "testdata/simple-web-app/Dockerfile",
             config: AppDeploymentConfig{...},
-            expectedComps: []string{"kong-ingress", "istio-mesh", "prometheus"},
+            expectedTools: []string{"analyze_dockerfile", "generate_deployment"},
+            expectedOutputs: []string{"deployment.yaml", "service.yaml"},
         },
-        // ... more test cases
+    }
+    
+    for _, tc := range testCases {
+        t.Run(tc.name, func(t *testing.T) {
+            err := agent.ExecuteDeployment(ctx, tc.config)
+            assert.NoError(t, err)
+            // Verify outputs...
+        })
     }
 }
 ```
 
-#### 4.2 Component Validation
-```go
-// pkg/deployment/validator.go
-type ManifestValidator struct {
-    KubeClient kubernetes.Interface
-    LintRules  []LintRule
-}
+#### 4.2 End-to-End Deployment Tests
+```bash
+#!/bin/bash
+# test/e2e/test-deployment.sh
 
-func (mv *ManifestValidator) ValidateManifests(manifests []KubernetesManifest) ([]ValidationError, error)
-func (mv *ManifestValidator) DryRunDeploy(manifests []KubernetesManifest) error
+# Start local MCP servers
+docker-compose -f test/e2e/mcp-servers.yml up -d
+
+# Test deployment with sample Dockerfile
+./kaptain-kube deploy test/fixtures/simple-web-app.yaml
+
+# Verify generated resources
+kubectl get deployment,service,ingress -n test-app
+
+# Cleanup
+docker-compose -f test/e2e/mcp-servers.yml down
 ```
 
 ## Usage Examples
@@ -598,4 +816,74 @@ kaptain-kube deploy app-config.yaml --plan-only
 - **Reduced Complexity**: Abstract away Kubernetes complexity while maintaining flexibility
 - **Cost Optimization**: Built-in resource optimization and scaling policies
 
-This capability positions KaptainKube as the bridge between containerized applications and production-ready Kubernetes deployments, embodying the "describe the app; let the agent build the platform" vision. 
+## Integration with KaptainKube's MCP Infrastructure
+
+KaptainKube already has robust MCP client infrastructure that this capability leverages:
+
+### Existing MCP Infrastructure
+- **Manager**: `pkg/mcp/manager.go` - Handles multiple MCP server connections
+- **Client**: `pkg/mcp/client.go` - Provides unified interface for stdio and HTTP MCP servers  
+- **Configuration**: `pkg/mcp/config.go` - YAML-based server configuration management
+- **Authentication**: Support for Bearer tokens, Basic auth, API keys for remote servers
+
+### Integration Points
+
+#### 1. Agent Initialization
+```go
+// The deployment agent uses existing MCP infrastructure
+func NewDeploymentAgent(mcpManager *mcp.Manager, llmClient gollm.Client) *DeploymentAgent {
+    return &DeploymentAgent{
+        MCPManager: mcpManager,
+        LLMClient:  llmClient,
+        // Inherits all existing MCP connection management
+    }
+}
+```
+
+#### 2. Tool Discovery & Registration
+The deployment capability builds on KaptainKube's existing tool registration system:
+```go
+// Existing pattern in KaptainKube
+mcpManager.RegisterTools(ctx, func(serverName string, tool mcp.Tool) error {
+    // Register deployment-specific MCP tools
+    if isDeploymentTool(tool) {
+        return registerDeploymentTool(serverName, tool)
+    }
+    return nil
+})
+```
+
+#### 3. Configuration Extension
+Extends existing MCP configuration format:
+```yaml
+# ~/.config/kubectl-ai/mcp.yaml (existing format)
+servers:
+  # Existing servers (sequential-thinking, etc.)
+  - name: sequential-thinking
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+  
+  # New deployment-specific servers
+  - name: docker-analysis
+    url: "http://localhost:8001"
+  - name: k8s-manifest-generator  
+    url: "http://localhost:8002"
+  # ... other deployment servers
+```
+
+### Deployment Workflow
+
+1. **Startup**: KaptainKube connects to all configured MCP servers (existing + deployment)
+2. **Command**: `kaptain-kube deploy` activates the deployment agent
+3. **Execution**: Agent orchestrates deployment-specific MCP servers alongside existing ones
+4. **Integration**: Seamless integration with existing kubectl-ai conversation flow
+
+### Benefits of MCP-Based Architecture
+
+- **Modularity**: Each deployment aspect (security, monitoring, etc.) is a separate MCP server
+- **Extensibility**: Easy to add new capabilities by developing new MCP servers
+- **Reusability**: MCP servers can be shared across different tools and platforms
+- **Scalability**: Remote MCP servers can be deployed and scaled independently
+- **Maintainability**: Clear separation of concerns between agent logic and implementation
+
+This capability positions KaptainKube as the bridge between containerized applications and production-ready Kubernetes deployments, embodying the "describe the app; let the agent build the platform" vision through intelligent MCP orchestration. 
